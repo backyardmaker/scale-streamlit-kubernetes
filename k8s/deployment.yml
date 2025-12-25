@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: streamlit-deployment
+  labels:
+    app: streamlit
+spec:
+  selector:
+    matchLabels:
+      app: streamlit
+  template:
+    metadata:
+      labels:
+        app: streamlit
+    spec:
+      containers:
+      - name: streamlit-app
+        image: backyardmaker/streamlit-app-demo:0.0.1
+        args: ["--server.port=8501", "--global.developmentMode=false"]
+        imagePullPolicy: IfNotPresent
+        resources:
+          requests:
+            memory: "500Mi"
+            cpu: "100m"
+          limits:
+            memory: "600Mi"
+            cpu: "300m"
+        ports:
+        - containerPort: 8501
+        readinessProbe:
+          tcpSocket:
+            port: 8501
+          initialDelaySeconds: 5
+          periodSeconds: 10
+        livenessProbe:
+          tcpSocket:
+            port: 8501
+          initialDelaySeconds: 30
+          periodSeconds: 60

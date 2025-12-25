@@ -1,0 +1,35 @@
+apiVersion: traefik.io/v1alpha1
+kind: TraefikService
+metadata:
+  name: sticky-session-traefik-service
+spec:
+  weighted:
+    sticky:
+      cookie:
+        name: lvl1 # Service-level cookie
+    services:
+      - name: streamlit-service
+        port: 80
+        weight: 10
+        sticky:
+          cookie:
+            name: lvl2 # Pod-level stickiness
+            httpOnly: true
+            secure: false # Send over HTTP/HTTPS
+            sameSite: strict # Cookie sent in first-party context, prevents CSRF
+
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: traefik-ingress-route
+spec:
+  entryPoints:
+  - web
+  routes:
+  # NOTE: Use IP address of Traefik load balancer
+  - match: Host(`scale-streamlit-app.192.168.50.162.nip.io`) # Use *.nip.io DNS wildcard to route traffic
+    kind: Rule
+    services:
+    - name: sticky-session-traefik-service
+      kind: TraefikService
