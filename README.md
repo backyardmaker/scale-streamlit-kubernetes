@@ -3,7 +3,7 @@ Streamlit uses WebSockets for real-time, two-way communication between the brows
 
 Maintaining this persistence is critical because Streamlit stores user data and application progress locally on the server; if the connection shifts to a new instance, the user's session will immediately reset, resulting in a fragmented and unreliable user experience.
 
-## Managing WebSocket Persistence During Scaling With Kubernetes :electric_plug:
+## Managing WebSocket Persistence When Scaling With Kubernetes :electric_plug:
 To support the stateful nature of Streamlit during scaling, Kubernetes orchestrates Horizontal Pod Autoscaling ([HPA](https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale-walkthrough/)) to manage fluctuating demand while leveraging Ingress Controllers to enforce the sticky sessions essential for stateful stability.
 
 Sticky sessions ensure session persistence by pinning each user to a specific backend pod, preventing the data loss and connection resets that occur when stateful Streamlit traffic is redistributed.
